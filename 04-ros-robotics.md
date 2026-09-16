@@ -73,6 +73,50 @@ It also pulls in **function SDKs**: the **IM SDK** (GStreamer-based AI/multimedi
 
 ---
 
+## Yocto + ROS + Qualcomm — building your own robotics image
+
+This is the question the embedded/BSP crowd at ROSCON will ask: *"Can I bake ROS 2 into a custom Yocto image on your silicon?"* **Yes** — and it's the production path (Ubuntu + PPAs is the prototyping path).
+
+**How it fits together:**
+- Everything is **Yocto / OpenEmbedded**, driven by the **KAS** tool (BitBake underneath).
+- The base BSP is Qualcomm's **`meta-qcom`** + **`meta-qcom-distro`** layers (the same layers behind stock Qualcomm Linux images like `qcom-minimal-image`, `qcom-console-image`, `qcom-multimedia-image`).
+- ROS comes from the upstream **`meta-ros`** OpenEmbedded layers.
+- Qualcomm's robotics glue is one layer: **`meta-qcom-robotics-sdk`** (GitHub tag `qli-2.0`). In QLI 2.0 the three separate QLI 1.0 robotics layers were **consolidated into this single layer** — it carries the `qrb-ros` recipes, Nav2/MoveIt/Cartographer `.bbappend` adaptations, kernel config fragments + DTS patches, the ROS 2 packagegroups, and the QIRP SDK packaging recipe.
+
+**The robotics image vs. a stock QLI image (differences are structural, not just "more packages"):**
+
+| Aspect | Stock QLI 2.0 | Robotics image |
+|--------|---------------|----------------|
+| DISTRO | `qcom-distro` | `qcom-robotics-distro` / **`qcom-robotics-ros2-jazzy`** (appends `ros2-jazzy` to `DISTRO_FEATURES`) |
+| Meta layer | `meta-qcom` BSP | **+ `meta-qcom-robotics-sdk`** (`qli-2.0`) |
+| Kernel | Qualcomm Linux kernel | same base **+ robotics kernel fragments & DTS patches**; pick `linux-qcom-6.18` or **RT** `linux-qcom-rt-6.18` |
+| Image recipe | `qcom-multimedia-image` | **`qcom-robotics-image`** (OSS) / **`qcom-robotics-proprietary-image`** |
+| ROS 2 | not included | **ROS 2 Jazzy + `qrb-ros` + Nav2 + MoveIt + Cartographer** |
+
+On a flashed board you can confirm it: `cat /etc/os-release` → `ID=qcom-robotics-ros2-jazzy`.
+
+**The actual build (KAS composes YAML fragments — machine : distro : target : kernel):**
+```bash
+# kas 4.8+; set up a normal Yocto build host first
+pipx install kas
+git clone https://github.com/qualcomm-linux/meta-qcom-robotics-sdk -b qli-2.0
+
+kas build \
+  meta-qcom-robotics-sdk/ci/iq-9075-evk.yml:\
+meta-qcom-robotics-sdk/ci/qcom-robotics-distro.yml:\
+meta-qcom-robotics-sdk/ci/qcom-robotics-image.yml:\
+meta-qcom-robotics-sdk/ci/linux-qcom-6.18.yml:\
+meta-qcom-robotics-sdk/ci/performance.yml
+# → build/tmp/deploy/images/iq-9075-evk/qcom-robotics-image-iq-9075-evk.rootfs.qcomflash
+```
+Swap fragments to change the build: **machine** `iq-9075-evk` / `iq-8275-evk`; **kernel** standard `linux-qcom-6.18` or real-time `linux-qcom-rt-6.18`; **target** OSS `qcom-robotics-image` or `qcom-robotics-proprietary-image`; append `debug.yml` or `performance.yml`. There's also a **GitHub Actions** workflow build and a **prebuilt robotics eSDK** path so you don't rebuild the whole tree.
+
+**Booth line:** *"It's real upstream Yocto — `meta-qcom` for the BSP, `meta-ros` for ROS, and one `meta-qcom-robotics-sdk` layer that adds ROS 2 Jazzy, the qrb_ros packages, Nav2/MoveIt/Cartographer, and an RT kernel option. One `kas build` line gives you a flashable robotics image."*
+
+📎 [Build the robotics image (KAS)](https://dragonwingdocs.qualcomm.com/SDKs/QIR-SDK-2.0/build-with-git-hub-workflow) · [Single unified layer / layer structure](https://dragonwingdocs.qualcomm.com/SDKs/QIR-SDK-2.0/migration-robotics-oe-layer-changes) · [Robotics image & overlays](https://dragonwingdocs.qualcomm.com/Linux/robotics/robotics-image-and-overlays) · [Qualcomm Linux Yocto Guide](https://dragonwingdocs.qualcomm.com/Key-Documents/Yocto-Guide/meta-qcom-distro)
+
+---
+
 ## Samples you can name-drop
 
 **AI vision:** object detection, object segmentation, **depth estimation**, **HRNet pose estimation**, face detection, hand detection, ResNet-101 classification.
@@ -96,7 +140,8 @@ Point people at **`qrb_ros_simulation`** — pre-built **AMR and manipulator** c
 ## Fast answers for ROS devs
 - *"Which ROS 2 distro?"* → **Jazzy.**
 - *"License?"* → **BSD-3-Clause**, all of it, upstream on GitHub.
-- *"How do I get the packages?"* → Ubuntu: Qualcomm IoT **PPAs**; Qualcomm Linux: **QIRP SDK**.
+- *"How do I get the packages?"* → Ubuntu: Qualcomm IoT **PPAs**; Qualcomm Linux: **QIRP SDK** (or Yocto-build your own — see the Yocto section above).
+- *"Can I build my own Yocto image with ROS?"* → Yes — `meta-qcom` + `meta-ros` + **`meta-qcom-robotics-sdk`**, one **`kas build`** line, optional **RT kernel**.
 - *"Do I need Qualcomm HW to start?"* → No — **Gazebo sim** + the DDS optimizer run anywhere.
 - *"What's actually special vs. my x86 + discrete GPU?"* → NPU-from-ROS, DMA-buf zero-copy, integrated ISP/camera, real-time cores, industrial temp — on one power-efficient module.
 - *"Where's the code?"* → **[github.com/qualcomm-qrb-ros](https://github.com/qualcomm-qrb-ros)**.

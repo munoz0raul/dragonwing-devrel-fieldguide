@@ -44,6 +44,9 @@ Prototyping/ROS → **Ubuntu** (QRB ROS via PPAs). Shipping a product → **Qual
 ### "How do I flash it?"
 Easiest: **Qualcomm Launcher** (GUI). Under the hood: **EDL** mode + **QDL** tool. → [05](05-tools-and-support.md)
 
+### "Can I build a custom Yocto image with ROS baked in?"
+Yes — it's the production path. Upstream **Yocto/OpenEmbedded** via **KAS**: `meta-qcom` (BSP) + `meta-ros` + Qualcomm's **`meta-qcom-robotics-sdk`** layer (tag `qli-2.0`), which adds **ROS 2 Jazzy**, the `qrb_ros` packages, **Nav2/MoveIt/Cartographer**, and a **real-time kernel** option. One `kas build` line → a flashable `qcom-robotics-image`. → [04](04-ros-robotics.md)
+
 ### "What's the license? Is it open?"
 All **QRB ROS** packages are **BSD-3-Clause**, upstream on GitHub. The stack builds on **Yocto / OpenEmbedded / meta-ros**. → [04](04-ros-robotics.md)
 

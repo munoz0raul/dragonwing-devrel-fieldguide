@@ -87,7 +87,15 @@
 |------|---------|
 | **QLI** | Qualcomm Linux (Image) — production embedded Linux distro. |
 | **Yocto** | The embedded-Linux build system QLI/QIR are built on. |
-| **meta-ros / OpenEmbedded** | Yocto layers that add ROS support. |
+| **BitBake** | Yocto's build engine (executes recipes). |
+| **KAS** | Tool that composes Yocto/BitBake builds from YAML fragments (needs v4.8+). |
+| **meta-qcom / meta-qcom-distro** | Qualcomm's Yocto BSP + distro layers (the base of QLI images). |
+| **meta-qcom-robotics-sdk** | The single QLI 2.0 layer adding ROS 2 Jazzy + qrb_ros + Nav2/MoveIt/Cartographer. |
+| **meta-ros / OpenEmbedded** | Upstream Yocto layers that add ROS support. |
+| **DISTRO / DISTRO_FEATURES** | Yocto distro selection & feature flags (e.g. `qcom-robotics-ros2-jazzy`, `ros2-jazzy`). |
+| **BSP** | Board Support Package (kernel + drivers + boot for a board). |
+| **DTS / DTB** | Device Tree Source / Blob — hardware description for the kernel. |
+| **RT kernel** | Real-time Linux kernel variant (`linux-qcom-rt-6.18`). |
 | **QSC** | Qualcomm Software Center — desktop app to get tools/SDKs/chip software. |
 | **QVSCE** | Qualcomm VS Code Extension — IDE integration for dev kits. |
 | **QDC** | Qualcomm Device Cloud — real remote devices for sessions/testing. |
@@ -115,17 +123,17 @@
 ## A–Z master list
 
 **A** — Adreno (GPU) · AI Hub · AIMET (AI Model Efficiency Toolkit) · AMR (Autonomous Mobile Robot) · API (Application Programming Interface) · AprilTag
-**B** — BSD-3-Clause · BSP (Board Support Package)
-**C** — CAN/CAN-FD (Controller Area Network) · CLI (Command-Line Interface) · CSI (Camera Serial Interface) · C-PHY
-**D** — DDS (Data Distribution Service) · DevRel (Developer Relations) · DLC (Deep Learning Container) · DMA-buf (DMA Buffer) · DSI (Display Serial Interface) · DSP (Digital Signal Processor)
+**B** — BitBake (Yocto build engine) · BSD-3-Clause · BSP (Board Support Package)
+**C** — CAN/CAN-FD (Controller Area Network) · Cartographer (SLAM) · CLI (Command-Line Interface) · CSI (Camera Serial Interface) · C-PHY
+**D** — DDS (Data Distribution Service) · DevRel (Developer Relations) · DISTRO/DISTRO_FEATURES (Yocto) · DLC (Deep Learning Container) · DMA-buf (DMA Buffer) · DSI (Display Serial Interface) · DSP (Digital Signal Processor) · DTS/DTB (Device Tree Source/Blob)
 **E** — ECC (Error-Correcting Code) · EDL (Emergency Download mode) · eMMC · eSDK (extensible SDK) · EVA (vision engine) · EVK (Evaluation Kit)
 **F** — FOTA (Firmware Over-The-Air) · FP16/FP32 (floating-point precision)
 **G** — GA (General Availability) · GbE (Gigabit Ethernet) · GenAI (Generative AI) · GPIO · GPU (Graphics Processing Unit)
 **H** — HTP (Hexagon Tensor Processor) · Hexagon (DSP brand) · HMX (Hexagon Matrix eXtensions) · HVX (Hexagon Vector eXtensions)
 **I** — I2C · I2S (audio) · I3C · IMU (Inertial Measurement Unit) · INT8/INT16 · ISP (Image Signal Processor)
-**K** — Kryo (CPU brand)
+**K** — KAS (Yocto build composer) · Kryo (CPU brand)
 **L** — LiteRT (Lite Runtime, ex-TFLite) · LKML · LLM (Large Language Model) · LPDDR4X/LPDDR5 (Low-Power DDR)
-**M** — meta-ros · MIPI (Mobile Industry Processor Interface)
+**M** — meta-qcom / meta-qcom-robotics-sdk · meta-ros · MIPI (Mobile Industry Processor Interface) · MoveIt (ROS manipulation)
 **N** — Nav2 (ROS 2 Navigation) · NPU (Neural Processing Unit)
 **O** — ONNX (Open Neural Network Exchange) · OpenEmbedded · OTA (Over-The-Air)
 **P** — PCIe · PMIC (Power Management IC) · POC (Proof of Concept) · PR (Pull Request)

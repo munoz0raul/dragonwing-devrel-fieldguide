@@ -20,6 +20,7 @@ If you remember one thing: **"Robotics-grade compute + real ROS 2 support + NPU 
 | They are… | Lead with… | Send them to… |
 |-----------|-----------|---------------|
 | **ROS developer** ("does it run ROS 2?") | Yes — **ROS 2 Jazzy**, upstream **QRB ROS** packages, BSD-3, on GitHub. Zero-copy transport + NPU inference nodes. | [`github.com/qualcomm-qrb-ros`](https://github.com/qualcomm-qrb-ros) · [04-ros-robotics.md](04-ros-robotics.md) |
+| **Embedded / BSP / Yocto person** ("can I build my own image?") | Yes — upstream Yocto: `meta-qcom` + `meta-ros` + `meta-qcom-robotics-sdk`, one `kas build`, RT-kernel option. | [Yocto+ROS section](04-ros-robotics.md#yocto--ros--qualcomm--building-your-own-robotics-image) |
 | **AI / ML engineer** ("how do I run my model?") | **Qualcomm AI Hub** for ready-optimized models; **QAIRT** (QNN + SNPE) to bring your own PyTorch/ONNX and run on the **Hexagon HTP NPU**. | [aihub.qualcomm.com](https://aihub.qualcomm.com) · [03-ai-edge-inference.md](03-ai-edge-inference.md) |
 | **Hardware / product person** ("which board?") | **RB3 Gen 2** to prototype cheap (QCS6490); **IQ-9075 EVK** for the flagship (100 TOPS, 16 cameras); **IQ-8275 / IQ-615** in between. | [02-chips-and-devices.md](02-chips-and-devices.md) |
 | **"Just getting started"** | Grab a kit, flash with **Qualcomm Launcher**, or borrow a real board in **Qualcomm Device Cloud** — no hardware needed. | [05-tools-and-support.md](05-tools-and-support.md) |
